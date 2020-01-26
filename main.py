@@ -11,17 +11,25 @@ from src.plot import *
 
 from src.data_processing import process_angles
 
-data = pandas.read_csv("sample.csv").dropna(axis=0)
+data = pandas.read_csv("./data/sample.csv").dropna(axis=0)
 
 processed_data = process_angles(data, 15)
 
-fig, axes = plt.subplots(1, 3, subplot_kw={"projection":"polar"})
+fig = plt.figure(figsize=(5, 7))
+ax = fig.add_subplot(1, 1, 1)
+plot_pitch(ax, "white", "black")
 
-simple_sonar(axes[0], processed_data)
-simple_sonar(axes[1], processed_data)
-simple_sonar(axes[2], processed_data)
+ax1 = fig.add_axes((0.3, 0.3, 0.3, 0.3), projection="polar")
+simple_sonar(ax1, processed_data)
 
-plt.savefig("passsonar.png")
+
+
+# fig, axes = plt.subplots(1, 2, subplot_kw={"projection":"polar"})
+
+
+# 
+
+plt.savefig("./img/passsonar.png")
 
 
 

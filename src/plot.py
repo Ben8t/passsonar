@@ -22,6 +22,14 @@ def plot_pitch(ax, background_color, line_color):
     ax.plot((0.25*pitch_width, 0.25*pitch_width), (0, 0.15*pitch_length), color=line_color)
     ax.plot((0.75*pitch_width, 0.75*pitch_width), (0, 0.15*pitch_length), color=line_color)
     ax.plot((0.25*pitch_width, 0.75*pitch_width), (0.15*pitch_length, 0.15*pitch_length), color=line_color)
+    arc1 = Arc((0.5*pitch_width, 0.15*pitch_length), height=0.2*pitch_width, width=0.2*pitch_width, angle=0, theta1=0, theta2=180, color=line_color)
+    ax.add_patch(arc1)
+
+    ax.plot((0.25*pitch_width, 0.25*pitch_width), (pitch_length, 0.85*pitch_length), color=line_color)
+    ax.plot((0.75*pitch_width, 0.75*pitch_width), (pitch_length, 0.85*pitch_length), color=line_color)
+    ax.plot((0.25*pitch_width, 0.75*pitch_width), (0.85*pitch_length, 0.85*pitch_length), color=line_color)
+    arc2 = Arc((0.5*pitch_width, 0.85*pitch_length), height=0.2*pitch_width, width=0.2*pitch_width, angle=0, theta1=180, theta2=0, color=line_color)
+    ax.add_patch(arc2)
     return ax
 
 def simple_sonar(ax, data):
