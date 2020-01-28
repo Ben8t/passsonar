@@ -36,11 +36,11 @@ class PlayerData:
     
     @property
     def lineup_horizontal(self):
-        return self.__player_dataframe["lineup_vertical"].unique()[0]/15.0 + 0.08
+        return 0.6655 - self.__player_dataframe["lineup_horizontal"].unique()[0]/15.0 + 0.08
 
     @property
     def lineup_vertical(self):
-        return self.__player_dataframe["lineup_horizontal"].unique()[0]/18.0 + 0.1
+        return self.__player_dataframe["lineup_vertical"].unique()[0]/18.0 + 0.1
 
     def __process_angles(self):
         player_angle = self.passes.copy()
@@ -59,7 +59,7 @@ class PlayerData:
         }
         filled_dataframe = pandas.DataFrame.from_dict(filled_data)
         full_data = player_angle.append(filled_dataframe, ignore_index=True)
-        full_data["angle_rad"] = (full_data["angle"] * numpy.pi / 180) - numpy.pi/2
+        full_data["angle_rad"] = -(full_data["angle"] * numpy.pi / 180) + numpy.pi/2
         full_data = full_data.sort_values(by="angle", ascending=False).reset_index(drop=True)
         return full_data
 

@@ -4,7 +4,7 @@ matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc
 
-def plot_pitch(ax, background_color, line_color):
+def plot_pitch(ax, line_color):
     pitch_width = 0.6
     pitch_length = 0.9
     # boundaries
@@ -48,9 +48,10 @@ def simple_sonar(ax, player):
     ax.set_title(player.name)
     return ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0)
 
-def plot_sonar(fig, players_data):
+def plot_sonar(fig, players_data, background_color):
     for _, player in enumerate(players_data):
         ax = fig.add_axes((player.lineup_horizontal, player.lineup_vertical, 0.2, 0.2), projection="polar", label=str(_))
-        print(player.name, player.lineup_horizontal, player.lineup_vertical)
         simple_sonar(ax, player)
+    fig.patch.set_facecolor(background_color)
+    fig.text(0.15, 0.9, "PassSonar", fontsize=32)
     return fig
