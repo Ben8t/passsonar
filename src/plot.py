@@ -41,17 +41,17 @@ def plot_pitch(ax, line_color):
     ax.add_artist(penalty_spot2)
     return ax
 
-def simple_sonar(ax, player):
+def simple_sonar(ax, player, fonts):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.set_frame_on(False)
-    ax.set_title(player.name)
+    ax.set_title(player.name, fontproperties=fonts["ObjectSans-Regular"])
     return ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0)
 
-def plot_sonar(fig, players_data, background_color):
+def plot_sonar(fig, players_data, background_color, fonts):
     for _, player in enumerate(players_data):
         ax = fig.add_axes((player.lineup_horizontal, player.lineup_vertical, 0.2, 0.2), projection="polar", label=str(_))
-        simple_sonar(ax, player)
+        simple_sonar(ax, player, fonts)
     fig.patch.set_facecolor(background_color)
-    fig.text(0.15, 0.9, "PassSonar", fontsize=32)
+    fig.text(0.15, 0.9, "PassSonar", fontproperties=fonts["ObjectSans-Heavy"], fontsize=50)
     return fig
