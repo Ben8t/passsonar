@@ -3,6 +3,25 @@ import matplotlib
 matplotlib.use('Agg') 
 import matplotlib.pyplot as plt
 from matplotlib.patches import Arc
+from PIL import Image
+import io
+import requests
+
+def make_colormap(seq):
+    """Return a LinearSegmentedColormap
+    seq: a sequence of floats and RGB-tuples. The floats should be increasing
+    and in the interval (0,1).
+    """
+    seq = [(None,) * 3, 0.0] + list(seq) + [1.0, (None,) * 3]
+    cdict = {'red': [], 'green': [], 'blue': []}
+    for i, item in enumerate(seq):
+        if isinstance(item, float):
+            r1, g1, b1 = seq[i - 1]
+            r2, g2, b2 = seq[i + 1]
+            cdict['red'].append([item, r1, r2])
+            cdict['green'].append([item, g1, g2])
+            cdict['blue'].append([item, b1, b2])
+    return matplotlib.colors.LinearSegmentedColormap('CustomMap', cdict)
 
 def plot_pitch(ax, line_color):
     pitch_width = 0.6
@@ -41,17 +60,31 @@ def plot_pitch(ax, line_color):
     ax.add_artist(penalty_spot2)
     return ax
 
-def simple_sonar(ax, player, fonts):
+def simple_sonar(ax, player, colors, fonts):
     ax.get_xaxis().set_visible(False)
     ax.get_yaxis().set_visible(False)
     ax.set_frame_on(False)
-    ax.set_title(player.name, fontproperties=fonts["ObjectSans-Regular"])
-    return ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0)
+    data_normalizer = matplotlib.colors.Normalize()
+    rgb_colors = [matplotlib.colors.ColorConverter().to_rgb(color) for color in colors["sonar_colors"]]
+    color_map = make_colormap(rgb_colors)
+    ax.set_title(player.name, fontproperties=fonts["ObjectSans-Regular"], color=colors["text_color"], fontsize=12)
+    return ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0, color=color_map(data_normalizer(list(player.angles.distance))))
 
-def plot_sonar(fig, players_data, background_color, fonts):
+def get_team_logo(team_id):
+    url = f"https://d2zywfiolv4f83.cloudfront.net/img/teams/{team_id}.png"
+    print(url)
+    image_data = requests.get(url).content
+    picture = Image.open(io.BytesIO(image_data))
+    return picture
+
+def plot_sonar(fig, players_data, colors, fonts, texts):
     for _, player in enumerate(players_data):
         ax = fig.add_axes((player.lineup_horizontal, player.lineup_vertical, 0.2, 0.2), projection="polar", label=str(_))
-        simple_sonar(ax, player, fonts)
-    fig.patch.set_facecolor(background_color)
-    fig.text(0.15, 0.9, "PassSonar", fontproperties=fonts["ObjectSans-Heavy"], fontsize=50)
+        simple_sonar(ax, player, colors, fonts)
+    fig.patch.set_facecolor(colors["background_color"])
+    fig.text(0.155, 0.92, texts["title"], fontproperties=fonts["ObjectSans-Heavy"], fontsize=54, color=colors["text_color"])
+    fig.text(0.25, 0.88, texts["game"], fontproperties=fonts["ObjectSans-Regular"], fontsize=24, color=colors["text_color"])
+    fig.text(0.25, 0.86, texts["date"], fontproperties=fonts["ObjectSans-Regular"], fontsize=12, color=colors["text_color"])
+    team_logo = get_team_logo("31")
+    fig.figimage(team_logo, 155, 1200)
     return fig
