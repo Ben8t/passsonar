@@ -5,7 +5,7 @@
 
 ## Run Docker container (dev)
 
-`docker container run --rm -it -v $(pwd):/app passsonar bash`
+`docker container run --rm -it -v $(pwd):/app -p 8501:8501 passsonar bash`
 
 # Resources
 

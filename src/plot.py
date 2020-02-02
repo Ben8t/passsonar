@@ -85,6 +85,6 @@ def plot_sonar(fig, players_data, colors, fonts, texts):
     fig.text(0.155, 0.92, texts["title"], fontproperties=fonts["ObjectSans-Heavy"], fontsize=54, color=colors["text_color"])
     fig.text(0.25, 0.88, texts["game"], fontproperties=fonts["ObjectSans-Regular"], fontsize=24, color=colors["text_color"])
     fig.text(0.25, 0.86, texts["date"], fontproperties=fonts["ObjectSans-Regular"], fontsize=12, color=colors["text_color"])
-    team_logo = get_team_logo("31")
+    team_logo = get_team_logo(players_data[0].team_id)
     fig.figimage(team_logo, 155, 1200)
     return fig

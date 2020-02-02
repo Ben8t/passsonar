@@ -1,9 +1,14 @@
 import numpy
 import pandas
 from math import atan2, sqrt
+import pandas.io.sql as sqlio
+import psycopg2
+from jinja2 import Template
+
 
 def compute_angle(row, degree_range):
     return - degree_range * round((atan2(row.y_end - row.y_begin, row.x_end - row.x_begin) * 180 / numpy.pi) / degree_range)
+
 
 def compute_distance(row):
     return sqrt(pow((row.y_end - row.y_begin), 2) + pow((row.x_end - row.x_begin), 2))
@@ -67,5 +72,23 @@ class PlayerData:
     def angles(self):
         return self.__process_angles()
 
+
 def aggregate_data(data, degree_range):
     return [PlayerData(x, degree_range) for _, x in data.groupby(data["player_name"])]
+
+
+def postgres_connect(host, port, dbname, user, password):
+    return psycopg2.connect(f"host='{host}' port={port} dbname='{dbname}' user={user} password={password}")
+
+
+def gather_pass_data(postgres_connection, game_id):
+    with open('./src/game_passes_query.sql.j2') as fopen:
+        query_template = Template(fopen.read())
+    query = query_template.render(game_id=game_id)
+    return sqlio.read_sql_query(query, postgres_connection)
+
+
+def get_games(postgres_connection):
+    query = f"""SELECT game_id, "startDate", home_team_name, away_team_name, home_team_id, away_team_id FROM metadata"""
+    data = sqlio.read_sql_query(query, postgres_connection)
+    return data
