@@ -3,6 +3,7 @@ import matplotlib
 matplotlib.use("Agg") 
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager
+from matplotlib.lines import Line2D
 import pandas
 import streamlit
 from PIL import Image
@@ -55,6 +56,18 @@ ax.set_frame_on(False)
 
 plot_pitch(ax, colors["foreground_color"])
 plot_sonar(fig, players_data, colors, fonts, texts)
+
+
+custom_lines = [Line2D([0], [0], color=colors["sonar_colors"][0], lw=4),
+                Line2D([0], [0], color=colors["sonar_colors"][2], lw=4),
+                Line2D([0], [0], color=colors["sonar_colors"][3], lw=4)]
+
+leg = ax.legend(custom_lines, ['short', 'medium', 'long'], loc=(0.82, -0.05), frameon=False, markerfirst=False, prop=fonts["ObjectSans-Regular"])
+for h, t in zip(leg.legendHandles, leg.get_texts()):
+    t.set_color("white")
+
+fig.text(0.69, 0.125, "Average pass distance", fontproperties=fonts["ObjectSans-Regular"], fontsize=11, color=colors["text_color"])
+fig.text(0.16, 0.125, "Bar length = pass angle frequency", fontproperties=fonts["ObjectSans-Regular"], fontsize=11, color=colors["text_color"])
 
 plt.savefig("./img/passsonar.png", facecolor=fig.get_facecolor())
 image = Image.open("./img/passsonar.png")

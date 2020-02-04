@@ -68,7 +68,8 @@ def simple_sonar(ax, player, colors, fonts):
     rgb_colors = [matplotlib.colors.ColorConverter().to_rgb(color) for color in colors["sonar_colors"]]
     color_map = make_colormap(rgb_colors)
     ax.set_title(player.name, fontproperties=fonts["ObjectSans-Regular"], color=colors["text_color"], fontsize=12)
-    return ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0, color=color_map(data_normalizer(list(player.angles.distance))))
+    bars = ax.bar(list(player.angles.angle_rad), list(player.angles.freq), width=0.2, bottom=0.0, color=color_map(data_normalizer(list(player.angles.distance))))
+    return bars
 
 def get_team_logo(team_id):
     url = f"https://d2zywfiolv4f83.cloudfront.net/img/teams/{team_id}.png"
